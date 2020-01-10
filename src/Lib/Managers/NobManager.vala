@@ -46,8 +46,6 @@ public class Akira.Lib.Managers.NobManager : Object {
 
     public weak Akira.Lib.Canvas canvas { get; construct; }
 
-    public Nob selected_nob;
-
     private Goo.CanvasItem root;
     private Goo.CanvasItem select_effect;
     private Goo.CanvasItemSimple[] nobs = new Goo.CanvasItemSimple[9];
@@ -70,10 +68,6 @@ public class Akira.Lib.Managers.NobManager : Object {
 
         canvas.window.event_bus.selected_items_changed.connect (on_add_select_effect);
         canvas.window.event_bus.zoom.connect (on_zoom);
-    }
-
-    public void set_selected_by_name (Nob selected_nob) {
-        this.selected_nob = selected_nob;
     }
 
     public Nob get_grabbed_id (Goo.CanvasItem? target) {

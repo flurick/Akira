@@ -23,7 +23,7 @@ using Akira.Lib.Models;
 using Akira.Lib.Managers;
 
 public class Akira.Utils.AffineTransform : Object {
-    private const int MIN_SIZE = 1;
+    public const int MIN_SIZE = 1;
     private const int MIN_POS = 10;
     private const int BOUNDS_H = 10000;
     private const int BOUNDS_W = 10000;
@@ -152,6 +152,13 @@ public class Akira.Utils.AffineTransform : Object {
         canvas.convert_from_item_space (selected_item, ref initial_x, ref initial_y);
         selected_item.translate (origin_move_delta_x, origin_move_delta_y);
         canvas.convert_to_item_space (selected_item, ref initial_x, ref initial_y);
+
+        print ("initial_width %f\n", initial_width);
+        print ("initial_height %f\n", initial_height);
+        print ("delta x %f\n", delta_x);
+        print ("delta y %f\n", delta_y);
+        print ("width %f\n", new_width);
+        print ("height %f\n", new_height);
 
         set_size (new_width, new_height, selected_item);
     }

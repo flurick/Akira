@@ -22,6 +22,8 @@
 public class Akira.Lib.Managers.SelectedBoundManager : Object {
     public weak Akira.Lib.Canvas canvas { get; construct; }
 
+    public Managers.NobManager.Nob nob;
+
     private unowned List<Models.CanvasItem> _selected_items;
     public unowned List<Models.CanvasItem> selected_items {
         get {
@@ -75,11 +77,80 @@ public class Akira.Lib.Managers.SelectedBoundManager : Object {
         initial_height = select_bb.y2 - select_bb.y1;
     }
 
-    public void transform_bound (double event_x, double event_y, Managers.NobManager.Nob selected_nob) {
-        Models.CanvasItem selected_item;
-        selected_item = selected_items.nth_data (0);
+    public void recalculate_selected_nob () {
+        Models.CanvasItem selected_item = selected_items.nth_data (0);
+        if (nob != Managers.NobManager.Nob.NONE) {
+            double item_width = selected_item.get_coords ("width");
+            double item_height = selected_item.get_coords ("height");
+            if (nob == Managers.NobManager.Nob.BOTTOM_RIGHT) {
+               if (item_width <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.BOTTOM_LEFT;
+                   initial_width = selected_item.get_coords ("width");
+               }
+            } else if (nob == Managers.NobManager.Nob.RIGHT_CENTER) {
+               if (item_width <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.LEFT_CENTER;
+                   initial_width = selected_item.get_coords ("width");
+               }
+            } else if (nob == Managers.NobManager.Nob.TOP_RIGHT) {
+               if (item_width <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.TOP_LEFT;
+                   initial_width = selected_item.get_coords ("width");
+               }
+            } else if (nob == Managers.NobManager.Nob.BOTTOM_LEFT) {
+               if (item_width <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.BOTTOM_RIGHT;
+                   initial_width = selected_item.get_coords ("width");
+               }
+            } else if (nob == Managers.NobManager.Nob.LEFT_CENTER) {
+               if (item_width <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.RIGHT_CENTER;
+                   initial_width = selected_item.get_coords ("width");
+               }
+            } else if (nob == Managers.NobManager.Nob.TOP_LEFT) {
+               if (item_width <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.TOP_RIGHT;
+                   initial_width = selected_item.get_coords ("width");
+               }
+            }
+            if (nob == Managers.NobManager.Nob.BOTTOM_RIGHT) {
+               if (item_height <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.TOP_RIGHT;
+                   initial_height = selected_item.get_coords ("height");
+               }
+            } else if (nob == Managers.NobManager.Nob.BOTTOM_CENTER) {
+               if (item_height <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.TOP_CENTER;
+                   initial_height = selected_item.get_coords ("height");
+               }
+            } else if (nob == Managers.NobManager.Nob.TOP_RIGHT) {
+               if (item_height <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.BOTTOM_RIGHT;
+                   initial_height = selected_item.get_coords ("height");
+               }
+            } else if (nob == Managers.NobManager.Nob.BOTTOM_LEFT) {
+               if (item_height <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.TOP_LEFT;
+                   initial_height = selected_item.get_coords ("height");
+               }
+            } else if (nob == Managers.NobManager.Nob.TOP_CENTER) {
+               if (item_height <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.BOTTOM_CENTER;
+                   initial_height = selected_item.get_coords ("height");
+               }
+            } else if (nob == Managers.NobManager.Nob.TOP_LEFT) {
+               if (item_height <= Utils.AffineTransform.MIN_SIZE) {
+                   nob = Managers.NobManager.Nob.TOP_RIGHT;
+                   initial_height = selected_item.get_coords ("height");
+               }
+            }
+        }
+    }
 
-        switch (selected_nob) {
+    public void transform_bound (double event_x, double event_y) {
+        Models.CanvasItem selected_item = selected_items.nth_data (0);
+        recalculate_selected_nob ();
+        switch (nob) {
             case Managers.NobManager.Nob.NONE:
                 Utils.AffineTransform.move_from_event (
                     event_x, event_y,
@@ -101,7 +172,7 @@ public class Akira.Lib.Managers.SelectedBoundManager : Object {
                     event_x, event_y,
                     ref initial_event_x, ref initial_event_y,
                     initial_width, initial_height,
-                    selected_nob,
+                    nob,
                     selected_item
                 );
                 break;
